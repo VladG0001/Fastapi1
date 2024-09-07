@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, select {
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            padding: 10px;
+        }
+        .result {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Простий калькулятор</h1>
+    <form id="calculator-form">
+        <input type="number" id="operand1" placeholder="Перше число" required>
+        <select id="operation" required>
+            <option value="+">Додавання</option>
+            <option value="-">Віднімання</option>
+            <option value="*">Множення</option>
+            <option value="/">Ділення</option>
+            <option value="%">Остача від ділення</option>
+        </select>
+        <input type="number" id="operand2" placeholder="Друге число" required>
+        <button type="submit">Обчислити</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        const form = document.getElementById('calculator-form');
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const operand1 = document.getElementById('operand1').value;
+            const operation = document.getElementById('operation').value;
+            const operand2 = document.getElementById('operand2').value;
+
+            const response = await fetch(`/calculate?operation=${operation}&operand1=${operand1}&operand2=${operand2}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('result').textContent = `Результат: ${data.result}`;
+            } else {
+                const errorData = await response.json();
+                document.getElementById('result').textContent = `Помилка: ${errorData.detail}`;
+                document.getElementById('result').style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
